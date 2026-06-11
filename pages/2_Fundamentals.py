@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.data import load_balance_sheet, load_income_statement
+from src.data import load_balance_sheet, load_income_statement, load_or_stop
 
 st.set_page_config(page_title="Fundamentals", layout="wide")
 st.title("Company Fundamentals")
@@ -14,8 +14,8 @@ if not ticker:
     st.info("Enter a ticker symbol to get started.")
     st.stop()
 
-income = load_income_statement(ticker)
-balance = load_balance_sheet(ticker)
+income = load_or_stop(load_income_statement, ticker)
+balance = load_or_stop(load_balance_sheet, ticker)
 
 if income.empty or balance.empty:
     st.error(f"No financial statement data found for '{ticker}'.")

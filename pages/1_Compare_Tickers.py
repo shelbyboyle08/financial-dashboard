@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.data import load_history
+from src.data import load_history, load_or_warn
 
 st.set_page_config(page_title="Compare Tickers", layout="wide")
 st.title("Compare Tickers")
@@ -17,7 +17,7 @@ if not tickers:
 
 fig = go.Figure()
 for ticker in tickers:
-    hist = load_history(ticker, period)
+    hist = load_or_warn(load_history, ticker, period)
     if hist.empty:
         st.warning(f"No data found for '{ticker}'.")
         continue

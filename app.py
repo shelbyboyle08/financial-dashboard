@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.data import add_moving_averages, add_returns, load_history, load_info
+from src.data import add_moving_averages, add_returns, load_history, load_info, load_or_stop
 
 st.set_page_config(page_title="Financial Dashboard", layout="wide")
 st.title("Financial Data Dashboard")
@@ -13,13 +13,13 @@ if not ticker:
     st.info("Enter a ticker symbol to get started.")
     st.stop()
 
-hist = load_history(ticker, period)
+hist = load_or_stop(load_history, ticker, period)
 
 if hist.empty:
     st.error(f"No data found for ticker '{ticker}'.")
     st.stop()
 
-info = load_info(ticker)
+info = load_or_stop(load_info, ticker)
 st.subheader(info.get("longName", ticker))
 
 latest = hist.iloc[-1]
