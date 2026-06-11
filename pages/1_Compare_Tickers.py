@@ -5,6 +5,12 @@ from src.data import load_history, load_or_warn
 
 st.set_page_config(page_title="Compare Tickers", layout="wide")
 st.title("Compare Tickers")
+st.caption(
+    "Compares relative performance across tickers by indexing each one's price to 100 "
+    "at the start of the period. This makes it easy to compare stocks with very "
+    "different price levels on the same scale — a line above 100 means the stock is up "
+    "since the start date, below 100 means it's down."
+)
 
 tickers_input = st.sidebar.text_input("Tickers (comma-separated)", value="AAPL, MSFT, GOOGL")
 period = st.sidebar.selectbox("Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y"], index=3)

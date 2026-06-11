@@ -49,13 +49,44 @@ net_debt = row(balance, "Net Debt")
 col1, col2, col3, col4 = st.columns(4)
 
 if ebitda is not None:
-    col1.metric("EBITDA (latest FY)", f"${ebitda.iloc[-1] / 1e9:.2f}B")
+    col1.metric(
+        "EBITDA (latest FY)",
+        f"${ebitda.iloc[-1] / 1e9:.2f}B",
+        help=(
+            "Earnings Before Interest, Taxes, Depreciation & Amortization. A proxy for "
+            "core operating profitability that strips out financing structure, tax "
+            "jurisdiction, and non-cash accounting charges — often used to compare "
+            "companies on a like-for-like basis."
+        ),
+    )
 if ebitda is not None and revenue is not None:
-    col2.metric("EBITDA Margin", f"{ebitda.iloc[-1] / revenue.iloc[-1] * 100:.1f}%")
+    col2.metric(
+        "EBITDA Margin",
+        f"{ebitda.iloc[-1] / revenue.iloc[-1] * 100:.1f}%",
+        help="EBITDA divided by revenue. Shows how much of each sales dollar becomes operating profit before financing and accounting effects — a rising margin signals improving operating efficiency.",
+    )
 if working_capital is not None:
-    col3.metric("Working Capital", f"${working_capital.iloc[-1] / 1e9:.2f}B")
+    col3.metric(
+        "Working Capital",
+        f"${working_capital.iloc[-1] / 1e9:.2f}B",
+        help=(
+            "Current Assets minus Current Liabilities. Measures whether a company has "
+            "enough short-term resources (cash, receivables, inventory) to cover its "
+            "near-term obligations. Negative working capital isn't always bad — it's "
+            "normal for businesses that collect cash from customers faster than they "
+            "pay suppliers."
+        ),
+    )
 if current_assets is not None and current_liabilities is not None:
-    col4.metric("Current Ratio", f"{current_assets.iloc[-1] / current_liabilities.iloc[-1]:.2f}")
+    col4.metric(
+        "Current Ratio",
+        f"{current_assets.iloc[-1] / current_liabilities.iloc[-1]:.2f}",
+        help=(
+            "Current Assets divided by Current Liabilities. A ratio above 1 generally "
+            "means short-term assets cover short-term debts; below 1 can signal "
+            "liquidity risk, though healthy levels vary a lot by industry."
+        ),
+    )
 
 st.divider()
 
@@ -65,11 +96,17 @@ if ebitda is not None and revenue is not None:
     revenue_fig.add_trace(go.Bar(x=labels, y=ebitda / 1e9, name="EBITDA ($B)"))
     revenue_fig.update_layout(title="Revenue vs EBITDA", barmode="group", yaxis_title="USD (Billions)")
     st.plotly_chart(revenue_fig, use_container_width=True)
+    st.caption(
+        "Compares total revenue to **EBITDA** each year, showing how much of the "
+        "top line converts into operating profit before interest, taxes, "
+        "depreciation, and amortization."
+    )
 
     margin_fig = go.Figure()
     margin_fig.add_trace(go.Scatter(x=labels, y=ebitda / revenue * 100, mode="lines+markers", name="EBITDA Margin"))
     margin_fig.update_layout(title="EBITDA Margin", yaxis_title="Margin (%)")
     st.plotly_chart(margin_fig, use_container_width=True)
+    st.caption("**EBITDA Margin** (EBITDA ÷ Revenue) tracked over time — a rising trend suggests improving operating efficiency or pricing power.")
 
 if current_assets is not None and current_liabilities is not None:
     wc_fig = go.Figure()
@@ -79,17 +116,31 @@ if current_assets is not None and current_liabilities is not None:
         wc_fig.add_trace(go.Scatter(x=labels, y=working_capital / 1e9, mode="lines+markers", name="Working Capital ($B)"))
     wc_fig.update_layout(title="Working Capital Components", barmode="group", yaxis_title="USD (Billions)")
     st.plotly_chart(wc_fig, use_container_width=True)
+    st.caption(
+        "**Current Assets** (cash, receivables, inventory) vs **Current Liabilities** "
+        "(payables, short-term debt). **Working Capital** is the difference between "
+        "the two — the cushion of short-term resources available after covering "
+        "near-term obligations."
+    )
 
     ratio_fig = go.Figure()
     ratio_fig.add_trace(go.Scatter(x=labels, y=current_assets / current_liabilities, mode="lines+markers", name="Current Ratio"))
     ratio_fig.update_layout(title="Current Ratio", yaxis_title="Ratio")
     st.plotly_chart(ratio_fig, use_container_width=True)
+    st.caption("**Current Ratio** (Current Assets ÷ Current Liabilities) tracked over time — a common shorthand for short-term liquidity.")
 
 if net_debt is not None and ebitda is not None:
     lev_fig = go.Figure()
     lev_fig.add_trace(go.Scatter(x=labels, y=net_debt / ebitda, mode="lines+markers", name="Net Debt / EBITDA"))
     lev_fig.update_layout(title="Leverage: Net Debt / EBITDA", yaxis_title="x EBITDA")
     st.plotly_chart(lev_fig, use_container_width=True)
+    st.caption(
+        "**Net Debt / EBITDA** is a core credit/leverage ratio: roughly, how many "
+        "years of current operating earnings it would take to pay off net debt. "
+        "Lenders and credit analysts use it to gauge how much debt a company can "
+        "comfortably support — lower is generally less risky, but 'normal' levels "
+        "vary by industry."
+    )
 
 with st.expander("View raw income statement"):
     st.dataframe(income)
