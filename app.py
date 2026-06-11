@@ -6,7 +6,7 @@ from src.data import add_moving_averages, add_returns, load_history, load_info, 
 st.set_page_config(page_title="Financial Dashboard", layout="wide")
 st.title("Financial Data Dashboard")
 
-ticker = st.sidebar.text_input("Ticker symbol", value="AAPL").upper().strip()
+ticker = st.sidebar.text_input("Ticker symbol", value="XYZ").upper().strip()
 period = st.sidebar.selectbox("Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "max"], index=3)
 
 if not ticker:

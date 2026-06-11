@@ -8,7 +8,7 @@ st.set_page_config(page_title="Fundamentals", layout="wide")
 st.title("Company Fundamentals")
 st.caption("Annual EBITDA, working capital, and leverage trends from company financial statements.")
 
-ticker = st.sidebar.text_input("Ticker symbol", value="AAPL").upper().strip()
+ticker = st.sidebar.text_input("Ticker symbol", value="XYZ").upper().strip()
 
 if not ticker:
     st.info("Enter a ticker symbol to get started.")
